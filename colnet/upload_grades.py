@@ -103,6 +103,8 @@ def upload_grades(grades, exam_name, destinations):
 
         for student_id in grades[group_name]:
             grade = grades[group_name][student_id]['grade']
+            comment_path = grades[group_name][student_id]['path']
+
             grade_input = driver.find_element_by_id("txtNoteSaisie20%s" % student_id)
 
             clear_field(grade_input)
@@ -113,19 +115,26 @@ def upload_grades(grades, exam_name, destinations):
 
             grade_comment_link.click()
 
+            WebDriverWait(driver, 10).until(lambda x: x.window_handles[1]) 
+
             driver.switch_to.window(driver.window_handles[1])
 
-            save_button = driver.find_element_by_id('btnSauvegarder5')
+            save_button = WebDriverWait(driver, 10).until(lambda x: x.find_element_by_id('btnSauvegarder5')) 
 
             comment_area = driver.find_element_by_xpath('//textarea')
+            comment_visible_checkbox = driver.find_element_by_id('chkCommentaireVisible')
+
+            if not comment_visible_checkbox.is_selected():
+                comment_visible_checkbox.click()
 
             clear_field(comment_area)
-            comment_area.send_keys("asdf")
+
+            with open(comment_path) as comment_file:
+                comment_area.send_keys(comment_file.read())
 
             save_button.click()
 
             driver.switch_to.window(driver.window_handles[0])
-
 
 
         save_button = driver.find_element_by_id("btnSauvegarderSaisie5")
@@ -133,7 +142,7 @@ def upload_grades(grades, exam_name, destinations):
 
         # there seem to be a limit to how quick 
         # we can save a second page
-        time.sleep(15)
+        time.sleep(3)
 
 
 
