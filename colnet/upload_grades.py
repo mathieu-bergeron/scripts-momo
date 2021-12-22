@@ -19,6 +19,7 @@ parser.add_argument('-destinations', metavar='DESTINATIONS', default="destinatio
 parser.add_argument('-c', metavar='COLNET', type=str, help='Colnet server name')
 parser.add_argument('-u', metavar='USER', type=str, help='Colnet username')
 parser.add_argument('-p', metavar='PASS', type=str, help='Colnet password')
+parser.add_argument('--hide-comment', metavar='COMMENT', default=False, type=bool, help='Hide comment')
 
 args = parser.parse_args()
 
@@ -34,6 +35,7 @@ DESTINATIONS = args.destinations
 COLNET_SERVER = args.c
 USERNAME = args.u
 PASSWORD = args.p
+HIDE_COMMENT = args.hide_comment
 
 COLNET_URL = 'https://%s' % COLNET_SERVER
 LOGIN_URL = '%s/login.asp' % COLNET_URL
@@ -124,8 +126,12 @@ def upload_grades(grades, exam_name, destinations):
             comment_area = driver.find_element_by_xpath('//textarea')
             comment_visible_checkbox = driver.find_element_by_id('chkCommentaireVisible')
 
-            if not comment_visible_checkbox.is_selected():
-                comment_visible_checkbox.click()
+            if HIDE_COMMENT:
+                if comment_visible_checkbox.is_selected():
+                    comment_visible_checkbox.click()
+            else:
+                if not comment_visible_checkbox.is_selected():
+                    comment_visible_checkbox.click()
 
             clear_field(comment_area)
 
