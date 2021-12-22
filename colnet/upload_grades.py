@@ -54,14 +54,19 @@ def add_or_get(_dict, key, value):
 def login(driver, login_url, username, password):
     driver.get(login_url)
 
+
     username_input = WebDriverWait(driver, 10).until(lambda x: x.find_element_by_id('txtCodeUsager')) 
     username_input.send_keys(username)
 
     password_input = driver.find_element_by_id('txtMotDePasse')
     password_input.send_keys(password)
 
-    login_button = driver.find_element_by_id('btnConnecter')
-    login_button.click()
+    # Manual login (captcha)
+
+    #login_button = driver.find_element_by_id('btnConnecter')
+    #login_button.click()
+
+    WebDriverWait(driver, 3000).until(lambda x: x.find_element_by_id('Menu00Center')) 
 
 def logout(driver, logout_url):
     driver.get(logout_url)
